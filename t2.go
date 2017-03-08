@@ -64,7 +64,7 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
         fmt.Println("Could not fetch data with id "+Id+" from ledger", err)
         return nil, err
     }
-    //piBytes2 := piBytes
+    piBytes2 := piBytes
     var incidentInfo Incident
     err = json.Unmarshal(piBytes, &incidentInfo)
     if err != nil {
@@ -76,13 +76,11 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     fmt.Println(incidentInfo.Orig)
     fmt.Println(incidentInfo.Status)
 
-    /*
-	piBytes2, err = json.Marshal(&incidentInfo)
+    piBytes2, err = json.Marshal(&incidentInfo)
     if err != nil {
       fmt.Println("Error in unmarshaling",err)
       return nil, err
     }
-    */
 /*
     Bytes, err := stub.GetState(Id)
     if err != nil {
@@ -90,7 +88,9 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
         return nil, err
     }
 */
-    return piBytes, nil
+    s := incidentInfo.IncidentID + " " + incidentInfo.IName + " " + incidentInfo.Desc + " " + incidentInfo.Orig + " " + incidentInfo.Status
+    piBytes2 = []byte(s)
+    return piBytes2, nil
 }
 
 func Update(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
