@@ -88,7 +88,7 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
         return nil, err
     }
 */
-    return piBytes2, nil
+    return piBytes, nil
 }
 
 func Update(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
