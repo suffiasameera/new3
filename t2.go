@@ -75,6 +75,12 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     fmt.Println(incidentInfo.Desc)
     fmt.Println(incidentInfo.Orig)
     fmt.Println(incidentInfo.Status)
+
+    piBytes2, err = json.Marshal(&incidentInfo)
+    if err != nil {
+      fmt.Println("Error in unmarshaling",err)
+      return nil, err
+    }
 /*
     Bytes, err := stub.GetState(Id)
     if err != nil {
