@@ -62,7 +62,7 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     piBytes, err := stub.GetState(Id)
     if err != nil {
         fmt.Println("Could not fetch data with id "+Id+" from ledger", err)
-        return nil, err
+        return nil, errors.New("Could not fetch data with id " + Id + err.Error())
     }
     piBytes2 := piBytes
     var incidentInfo Incident
