@@ -16,6 +16,10 @@ Orig string `json:"orig"`
 Status string `json:"status"`
 }
 
+type customEvent struct {
+	Type       string `json:"type"`
+	Decription string `json:"description"`
+}
 
 func Create(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     fmt.Println("Entering Create function")
@@ -44,6 +48,12 @@ func Create(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     if err != nil {
         fmt.Println("Could not save changes", err)
         return nil, err
+    }
+
+    var customEvent = "{eventType: 'Creation', description:" + Id + "' Successfully created'}"
+    err = stub.SetEvent("evtSender", []byte(customEvent))
+    if err != nil {
+      return nil, err
     }
 
     fmt.Println("Successfully saved changes")
@@ -96,13 +106,14 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 func Update(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Update")
 
-	if len(args) < 2 {
+	if len(args) < 3 {
 		fmt.Println("Invalid number of args")
 		return nil, errors.New("Expected atleast two arguments for update")
 	}
 
 	var Id = args[0]
-	var status = args[1]
+	var changes = args[1]
+  var op = args[2]
 
 	laBytes, err := stub.GetState(Id)
 	if err != nil {
@@ -112,7 +123,17 @@ func Update(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	var incidentInfo Incident
 	err = json.Unmarshal(laBytes, &incidentInfo)
-	incidentInfo.Status = status
+  if( op == "1" ) {
+	//incidentInfo.IncidentId = changes
+  } else if( op == "2" ) {
+    incidentInfo.IName = changes
+  } else if ( op == "3" ) {
+    incidentInfo.Desc = changes
+  } else if ( op == "4" ) {
+    incidentInfo.Orig = changes
+  } else {
+    incidentInfo.Status = changes
+  }
 
 	laBytes, err = json.Marshal(&incidentInfo)
 	if err != nil {
@@ -125,7 +146,13 @@ func Update(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 		fmt.Println("Could not save update", err)
 		return nil, err
 	}
-
+/*
+  var customEvent = "{eventType: 'Update', description:" + Id + "' Successfully updated status'}"
+	err = stub.SetEvent("evtSender", []byte(customEvent))
+	if err != nil {
+		return nil, err
+	}
+*/
 	fmt.Println("Successfully updated changes")
 	return nil, nil
 
