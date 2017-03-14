@@ -103,6 +103,22 @@ func Get(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     return piBytes2, nil
 }
 
+func Delete(stub shim.ChaincodeStubInterface, args []string) (error) {
+		fmt.Println("Entering Delete")
+	  var Id = args[0]
+
+			err := stub.DelState(Id)
+			if err != nil {
+				fmt.Println("Could not delete from ledger", err)
+				return  err
+			}
+
+		fmt.Println("Successfully deleted ")
+		return nil
+
+
+	}
+
 func Update(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Update")
 
@@ -210,6 +226,9 @@ func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
   if function=="update" {
     return Update(stub,args)
   }
+	if function=="delete" {
+		Delete(stub,args)
+	}
   fmt.Println("Invoke did not find func: " + function)
     return nil, nil
 }
